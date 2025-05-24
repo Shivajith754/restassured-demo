@@ -30,7 +30,7 @@ jobs:
         run: mvn clean test -Dsurefire.suiteXmlFiles=testng.xml
 
       - name: Archive ExtentReport
-        uses: actions/upload-artifact@v1
+        uses: ./.github/actions/upload-artifact
         with:
           name: ExtentReport
           path: target/ExtentReport.html
