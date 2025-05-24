@@ -9,6 +9,7 @@
             <class name="com.example.apitests.CrudOperationsTest"/>
             <class name="com.example.apitests.AuthAndHeadersTest"/>
             <class name="com.example.apitests.JsonSchemaValidationTest"/>
+            <class name="com.example.uitests.GoogleUiTest"/>
         </classes>
 
     </test>
