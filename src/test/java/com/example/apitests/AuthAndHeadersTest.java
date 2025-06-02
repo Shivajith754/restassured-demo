@@ -31,7 +31,7 @@ public class AuthAndHeadersTest {
                 .body("authenticated", equalTo(true))
                 .body("user",          equalTo("user"))   // <- expect whatever username you sent
                 .log().body();
-    }
+    } //redeploy
 
     @Test
     public void testBearerAuth() {
