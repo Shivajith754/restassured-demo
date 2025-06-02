@@ -1,33 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+    <modelVersion>4.0.0</modelVersion>
     <groupId>com.example.apitests</groupId>
     <artifactId>restassured-demo</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <!-- ────────────────────────── -->
+    <!--  Centralised version props -->
+    <!-- ────────────────────────── -->
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- library versions -->
+        <restassured.version>5.4.0</restassured.version>      <!-- latest GA -->
+        <testng.version>7.10.2</testng.version>
+        <extentreports.version>5.1.1</extentreports.version>
+        <selenium.version>4.19.0</selenium.version>           <!-- Chrome 137 -->
+        <webdrivermanager.version>6.1.0</webdrivermanager.version>
+        <lombok.version>1.18.30</lombok.version>
+        <surefire.version>3.2.5</surefire.version>
     </properties>
+
+    <!-- ────────────────────────── -->
+    <!--  Selenium BOM for harmony  -->
+    <!-- ────────────────────────── -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-bom</artifactId>
+                <version>${selenium.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- ────────────────────────── -->
+    <!--  Project dependencies      -->
+    <!-- ────────────────────────── -->
     <dependencies>
-        <!-- REST Assured Java DSL -->
+
+        <!-- REST-Assured core + JSON-schema validator -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>5.5.5</version>
+            <version>${restassured.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- JSON Schema Validator -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>json-schema-validator</artifactId>
-            <version>5.5.5</version>
+            <version>${restassured.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -35,33 +65,51 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.10.1</version>
+            <version>${testng.version}</version>
             <scope>test</scope>
         </dependency>
+
         <!-- ExtentReports -->
         <dependency>
             <groupId>com.aventstack</groupId>
             <artifactId>extentreports</artifactId>
-            <version>5.0.9</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>4.16.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>5.7.0</version>
+            <version>${extentreports.version}</version>
             <scope>test</scope>
         </dependency>
 
+        <!-- Selenium 4.19 – Java bindings -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- WebDriverManager -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdrivermanager.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Lombok (compile-time only) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
+
+    <!-- ────────────────────────── -->
+    <!--  Build plugins             -->
+    <!-- ────────────────────────── -->
     <build>
         <plugins>
-            <!-- Compiler plugin: grant Lombok export access -->
+
+            <!-- Compiler plugin (export to keep Lombok happy on JDK 17) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -77,26 +125,25 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.28</version>
+                            <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
-            <!-- Surefire plugin: combine config here -->
+            <!-- Surefire for TestNG -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M7</version>
+                <version>${surefire.version}</version>
                 <configuration>
-                    <argLine>--add-exports jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</argLine>
-                    <!-- Point Surefire at your TestNG suite -->
                     <suiteXmlFiles>
                         <suiteXmlFile>testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
-        </plugins>
 
+        </plugins>
     </build>
+
 </project>

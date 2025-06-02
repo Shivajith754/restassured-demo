@@ -1,19 +1,38 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="APITestSuite">
-    <test name="APITests">
 
+<!--  TestNG suite  -->
+
+<suite name="Demo-Suite" parallel="tests" thread-count="2">
+
+    <!-- ──────────────── -->
+    <!--  ①  API tests    -->
+    <!-- ──────────────── -->
+    <test name="API-Tests">
         <classes>
-            <class name="com.example.apitests.SanityTest"/>
-            <class name="com.example.apitests.GetPostTest"/>
-            <class name="com.example.apitests.GetCommentsTest"/>
-            <class name="com.example.apitests.CrudOperationsTest"/>
-            <class name="com.example.apitests.AuthAndHeadersTest"/>
+            <class name="com.example.apitests.SanityTest"             />
+            <class name="com.example.apitests.GetPostTest"            />
+            <class name="com.example.apitests.GetCommentsTest"        />
+            <class name="com.example.apitests.CrudOperationsTest"     />
+            <class name="com.example.apitests.AuthAndHeadersTest"     />
             <class name="com.example.apitests.JsonSchemaValidationTest"/>
-            <class name="com.example.uitests.DuckDuckGoUiTest"/>
         </classes>
-
     </test>
+
+    <!-- ──────────────── -->
+    <!--  ②  UI test      -->
+    <!-- ──────────────── -->
+    <test name="UI-Tests">
+        <classes>
+            <!-- Single-class smoke test for Wikipedia search -->
+            <class name="com.example.uitests.WikipediaUiTest"/>
+        </classes>
+    </test>
+
+    <!-- ──────────────── -->
+    <!--  Extent listener -->
+    <!-- ──────────────── -->
     <listeners>
         <listener class-name="com.example.apitests.utils.ExtentListener"/>
     </listeners>
+
 </suite>
