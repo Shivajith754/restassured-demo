@@ -1,7 +1,5 @@
 # Automated API & UI Test Framework
-
 ![CI](https://github.com/Shivajith754/restassured-demo/actions/workflows/ci.yml/badge.svg)
-
 A **Java 17 / Maven / TestNG** framework that demonstrates both **UI automation** (Selenium WebDriver) and **API automation** (Rest-Assured) running in **GitHub Actions**. It generates a one-click **Extent Spark HTML** report on every push. Use it as a learning project or a bootstrap template for real-world regression suites.
 
 ---
@@ -12,7 +10,8 @@ A **Java 17 / Maven / TestNG** framework that demonstrates both **UI automation*
 |-------|------------|
 | **UI Automation** | • Page-Object Model (Wikipedia smoke test)<br>• WebDriverManager + headless Chrome (CI-friendly)<br>• Parallel execution via TestNG suite XML |
 | **API Automation** | • CRUD tests against `jsonplaceholder.typicode.com`<br>• Auth & header checks against `httpbin.org`<br>• JSON-schema validation with `json-schema-validator` |
-| **Reporting** | • Extent Spark HTML report (`target/ExtentReport.html`)<br>• Archived as a GitHub Actions artefact |
+| **BDD (Cucumber)** | • Feature files in `src/test/resources/features`<br>• Steps and hooks in `com.example.bdd` |
+| **Reporting** | • Extent Spark HTML report (`target/ExtentReport.html`)<br>• Cucumber HTML report (`target/cucumber-report.html`)<br>• Archived as a GitHub Actions artefact |
 | **CI/CD** | • Ubuntu latest runner<br>• Dependency cache for faster builds<br>• JDK 17 via Temurin distribution |
 
 ---
@@ -23,17 +22,21 @@ A **Java 17 / Maven / TestNG** framework that demonstrates both **UI automation*
 ├── src
 │   ├── main
 │   │   └── java
-│   │       └── com/example/pages      (Page Objects)
+│   │       └── com/example/apitests      (sample Main class)
 │   └── test
 │       ├── java
-│       │   ├── com/example/apitests   (API tests)
-│       │   ├── com/example/uitests    (UI tests)
-│       │   └── com/example/tests      (BaseTest)
+│       │   ├── com/example/apitests      (API tests)
+│       │   ├── com/example/uitests       (UI tests)
+│       │   ├── com/example/bdd           (Cucumber runner, steps, hooks)
+│       │   ├── com/example/pages         (Page Objects)
+│       │   └── com/example/tests         (BaseTest)
 │       └── resources
-│           └── schemas                (JSON schemas)
-├── .github/workflows/ci.yml           (GitHub Actions pipeline)
-├── testng.xml                         (parallel suite)
-└── pom.xml                            (dependencies & plugins)
+│           ├── features                  (Cucumber feature files)
+│           └── schemas                   (JSON schemas)
+├── .github/workflows/ci.yml              (GitHub Actions pipeline)
+├── images                                (report screenshots)
+├── testng.xml                            (parallel suite)
+└── pom.xml                               (dependencies & plugins)
 ```
 
 ---
@@ -55,6 +58,7 @@ $ mvn clean test -Dsurefire.suiteXmlFiles=testng.xml
 ### 3  View the report
 ```text
 Open target/ExtentReport.html in your browser.
+The Cucumber HTML report is at target/cucumber-report.html.
 ```
 
 > **Tip :** Add `-Dskip.ui=true` or `-Dskip.api=true` flags if you split profiles later.
@@ -77,7 +81,7 @@ Open target/ExtentReport.html in your browser.
 | Add a new UI test | Create a Page Object under `com.example.pages`, then a TestNG class in `uitests`. |
 | Add a new API test | Drop a class under `apitests`; use `RestAssured` BDD style shown in `CrudOperationsTest`. |
 | Switch to Playwright | Add the `com.microsoft.playwright` dependency and port `WikipediaUiTest`. |
-| Enable BDD (Cucumber) | Add `cucumber-java`, `cucumber-testng`, then write `.feature` files in `src/test/resources`. |
+| Write more BDD scenarios | Place `.feature` files under `src/test/resources/features` and step definitions in `com.example.bdd`. |
 
 ---
 
@@ -99,9 +103,9 @@ You’ll find the full file at `.github/workflows/ci.yml`.
 
 ## 📸 Screenshots / Badges
 
-| Extent Spark Overview |
-|-----------------------|
-| ![Extent Report Overview](images/extent-report-overview.png) |
+| Extent Spark Overview | Cucumber Report |
+|-----------------------|----------------|
+| ![Extent Report](images/extent-report-overview.png) | ![Cucumber Report](images/cucumber-html-report.png) |
 
 ---
 
