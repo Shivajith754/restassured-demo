@@ -7,49 +7,53 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.*;
 
-import java.time.Duration;
-import java.util.Arrays;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.util.Arrays;
 
 public class BaseTest {
-    protected WebDriver driver;
-    protected WebDriverWait wait;
 
-    @BeforeMethod
-    public void setUp() {
+    /** one WebDriver per thread (safe for TestNG & Cucumber parallelism) */
+    private static final ThreadLocal<WebDriver>     TL_DRIVER = new ThreadLocal<>();
+    private static final ThreadLocal<WebDriverWait> TL_WAIT   = new ThreadLocal<>();
+
+    /* ── Bootstrap / teardown shared by TestNG *and* Cucumber ── */
+    protected void startDriver() {
         WebDriverManager.chromedriver().setup();
 
-        ChromeOptions options = new ChromeOptions();
-        // Stealth/anti-bot settings
-        options.setExperimentalOption("excludeSwitches", Arrays.asList("enable-automation"));
-        options.setExperimentalOption("useAutomationExtension", false);
-        options.addArguments("--disable-blink-features=AutomationControlled");
+        ChromeOptions opts = new ChromeOptions();
+        opts.setExperimentalOption("excludeSwitches", Arrays.asList("enable-automation"));
+        opts.setExperimentalOption("useAutomationExtension", false);
+        opts.addArguments(
+                "--disable-blink-features=AutomationControlled",
+                "--headless=new", "--no-sandbox", "--disable-dev-shm-usage"
+        );
 
-        // Headless for CI (uncomment next line if you want to always run headless locally too)
-        options.addArguments("--headless=new");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-
-        // Use a unique user-data-dir for each session (prevents conflicts in CI)
         try {
-            Path tempProfile = Files.createTempDirectory("chrome-profile-");
-            options.addArguments("--user-data-dir=" + tempProfile.toAbsolutePath());
-        } catch (Exception e) {
-            // If there's an issue, just continue without the unique profile
-            System.err.println("Could not create temp Chrome profile: " + e.getMessage());
-        }
+            Path tmp = Files.createTempDirectory("chrome-profile-");
+            opts.addArguments("--user-data-dir=" + tmp.toAbsolutePath());
+        } catch (Exception ignored) { }
 
-        // Optional: spoof user-agent (uncomment if needed)
-        // options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36");
+        WebDriver d = new ChromeDriver(opts);
+        d.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
-        driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        TL_DRIVER.set(d);
+        TL_WAIT.set(new WebDriverWait(d, Duration.ofSeconds(10)));
     }
 
-    @AfterMethod
-    public void tearDown() {
-        if (driver != null) driver.quit();
+    protected void stopDriver() {
+        WebDriver d = TL_DRIVER.get();
+        if (d != null) d.quit();
+        TL_DRIVER.remove();
+        TL_WAIT.remove();
     }
+
+    /* ── Getters used by all tests ── */
+    protected WebDriver      driver() { return TL_DRIVER.get(); }
+    protected WebDriverWait  getWait() { return TL_WAIT.get(); }
+
+    /* ── Original TestNG hooks stay intact ── */
+    @BeforeMethod public void setUp()   { startDriver(); }
+    @AfterMethod  public void tearDown(){ stopDriver();  }
 }

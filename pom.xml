@@ -9,27 +9,23 @@
     <artifactId>restassured-demo</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <!-- ────────────────────────── -->
-    <!--  Centralised version props -->
-    <!-- ────────────────────────── -->
+    <!-- ───────── centralised versions ───────── -->
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- library versions -->
-        <restassured.version>5.4.0</restassured.version>      <!-- latest GA -->
+        <restassured.version>5.4.0</restassured.version>
         <testng.version>7.10.2</testng.version>
         <extentreports.version>5.1.1</extentreports.version>
-        <selenium.version>4.19.0</selenium.version>           <!-- Chrome 137 -->
+        <selenium.version>4.19.0</selenium.version>
         <webdrivermanager.version>6.1.0</webdrivermanager.version>
         <lombok.version>1.18.30</lombok.version>
         <surefire.version>3.2.5</surefire.version>
+        <slf4j.version>2.0.13</slf4j.version>
     </properties>
 
-    <!-- ────────────────────────── -->
-    <!--  Selenium BOM for harmony  -->
-    <!-- ────────────────────────── -->
+    <!-- ───────── Selenium BOM (core libs only) ───────── -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -42,12 +38,10 @@
         </dependencies>
     </dependencyManagement>
 
-    <!-- ────────────────────────── -->
-    <!--  Project dependencies      -->
-    <!-- ────────────────────────── -->
+    <!-- ───────── project dependencies ───────── -->
     <dependencies>
 
-        <!-- REST-Assured core + JSON-schema validator -->
+        <!-- REST-Assured -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -77,13 +71,12 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Selenium 4.19 – Java bindings -->
+        <!-- Selenium Java bindings -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <scope>test</scope>
         </dependency>
-
 
         <!-- WebDriverManager -->
         <dependency>
@@ -93,7 +86,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Lombok (compile-time only) -->
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -101,15 +94,42 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- SLF4J simple backend -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ─── BDD / Cucumber ─────────────────────────────── -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>7.18.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <version>7.18.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- (optional but handy for DI between steps) -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <version>7.18.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
-    <!-- ────────────────────────── -->
-    <!--  Build plugins             -->
-    <!-- ────────────────────────── -->
+    <!-- ───────── build plugins ───────── -->
     <build>
         <plugins>
 
-            <!-- Compiler plugin (export to keep Lombok happy on JDK 17) -->
+            <!-- Compiler (keep Lombok happy on JDK 17) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -131,7 +151,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Surefire for TestNG -->
+            <!-- Surefire -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -145,5 +165,13 @@
 
         </plugins>
     </build>
+
+    <!-- ───────── ensure Maven Central direct (optional) ───────── -->
+    <repositories>
+        <repository>
+            <id>central-direct</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+    </repositories>
 
 </project>

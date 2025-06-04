@@ -34,3 +34,9 @@ jobs:
         with:
           name: ExtentReport
           path: target/ExtentReport.html
+
+      - name: Archive Cucumber report
+        uses: actions/upload-artifact@v4
+        with:
+          name: CucumberReport
+          path: target/cucumber-report.html

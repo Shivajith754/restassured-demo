@@ -23,8 +23,9 @@ public class WikipediaUiTest extends BaseTest {
     @Test(dataProvider = "queries")
     public void searchShouldWork(String query) {
 
+        // 🔻  changed line: use getters, not fields
         WikipediaResultsPage results =
-                new WikipediaHomePage(driver, wait).searchFor(query);
+                new WikipediaHomePage(driver(), getWait()).searchFor(query);
 
         Assert.assertTrue(results.titleContainsQuery(),
                 "Title should contain '" + query + "', but was: "

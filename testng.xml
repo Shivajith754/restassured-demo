@@ -19,12 +19,20 @@
     </test>
 
     <!-- ──────────────── -->
-    <!--  ②  UI test      -->
+    <!--  ②  UI tests     -->
     <!-- ──────────────── -->
     <test name="UI-Tests">
         <classes>
-            <!-- Single-class smoke test for Wikipedia search -->
             <class name="com.example.uitests.WikipediaUiTest"/>
+        </classes>
+    </test>
+
+    <!-- ──────────────── -->
+    <!--  ③  BDD tests    -->
+    <!-- ──────────────── -->
+    <test name="BDD-Tests">
+        <classes>
+            <class name="com.example.bdd.runners.CucumberTestRunner"/>
         </classes>
     </test>
 
